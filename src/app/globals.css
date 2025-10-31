@@ -170,7 +170,7 @@
 }
 
 .prose a {
-	@apply text-primary hover:underline;
+	@apply text-blue-500 hover:text-blue-700 hover:underline;
 }
 
 .prose img {
