@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import ReactMarkdown from "react-markdown"
-import type { Components } from "react-markdown"
 import remarkGfm from "remark-gfm"
+import remarkBreaks from "remark-breaks";
 import { getProjectFiles, getFileContent, extractTagsFromProject } from "@/lib/github"
 import { getBadgeColor } from "@/lib/utils"
 
@@ -92,7 +92,7 @@ export default async function ProjectPage({
 
 									<div className="prose prose-neutral dark:prose-invert max-w-none">
 										<ReactMarkdown
-						remarkPlugins={[remarkGfm]}
+						remarkPlugins={[remarkGfm, remarkBreaks]}
 						components={{
 							img({ src, alt, ...props }) {
 								const resolvedSrc =
