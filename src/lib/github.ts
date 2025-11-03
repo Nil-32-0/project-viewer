@@ -20,6 +20,8 @@ interface ProjectDescription {
 	redirectUrl: string | null
 }
 
+const cacheTime = 60 //cache time in seconds
+
 const STATUS_DIRS = ["Completed", "In Progress", "Incomplete"] as const
 const STATUS_LOOKUP = new Map(STATUS_DIRS.map((status) => [status.toLowerCase(), status] as const))
 
@@ -56,7 +58,7 @@ export async function getProjects(): Promise<ProjectWithTags[]> {
 			headers: {
 				Accept: "application/vnd.github.v3+json",
 			},
-			next: { revalidate: 3600 },
+			next: { revalidate: cacheTime },
 		})
 
 		if (!response.ok) {
@@ -91,7 +93,7 @@ export async function getProjects(): Promise<ProjectWithTags[]> {
 				`https://api.github.com/repos/rileybarshak/projects/contents/${statusPath}`,
 				{
 					headers: { Accept: "application/vnd.github.v3+json" },
-					next: { revalidate: 3600 },
+					next: { revalidate: cacheTime },
 				},
 			)
 			if (!subResp.ok) continue
@@ -152,7 +154,7 @@ export async function resolveProjectPath(nameOrPath: string): Promise<string | n
 
 	const directResponse = await fetch(
 		`https://api.github.com/repos/rileybarshak/projects/contents/${encodePath(nameOrPath)}`,
-		{ headers: { Accept: "application/vnd.github.v3+json" }, next: { revalidate: 3600 } },
+		{ headers: { Accept: "application/vnd.github.v3+json" }, next: { revalidate: cacheTime } },
 	)
 	if (directResponse.ok) return nameOrPath
 
@@ -160,7 +162,7 @@ export async function resolveProjectPath(nameOrPath: string): Promise<string | n
 		const tryPath = `${status}/${nameOrPath}`
 		const response = await fetch(
 			`https://api.github.com/repos/rileybarshak/projects/contents/${encodePath(tryPath)}`,
-			{ headers: { Accept: "application/vnd.github.v3+json" }, next: { revalidate: 3600 } },
+			{ headers: { Accept: "application/vnd.github.v3+json" }, next: { revalidate: cacheTime } },
 		)
 		if (response.ok) return tryPath
 	}
@@ -178,7 +180,7 @@ export async function extractDescriptionFromProject(projectName: string): Promis
 				headers: {
 					Accept: "application/vnd.github.v3+json",
 				},
-				next: { revalidate: 3600 },
+				next: { revalidate: cacheTime },
 			},
 		)
 
@@ -195,7 +197,7 @@ export async function extractDescriptionFromProject(projectName: string): Promis
 
 		//Fetch markdown content
 		const contentResponse = await fetch(markdownFile.download_url, {
-			next: { revalidate: 3600 },
+			next: { revalidate: cacheTime },
 		})
 
 		if (!contentResponse.ok) {
@@ -242,7 +244,7 @@ export async function extractTagsFromProject(projectName: string): Promise<strin
 				headers: {
 					Accept: "application/vnd.github.v3+json",
 				},
-				next: { revalidate: 3600 },
+				next: { revalidate: cacheTime }, 
 			},
 		)
 
@@ -259,7 +261,7 @@ export async function extractTagsFromProject(projectName: string): Promise<strin
 
 		//Fetch markdown content
 		const contentResponse = await fetch(markdownFile.download_url, {
-			next: { revalidate: 3600 },
+			next: { revalidate: cacheTime },
 		})
 
 		if (!contentResponse.ok) {
@@ -301,7 +303,7 @@ export async function getProjectFiles(projectName: string): Promise<ProjectFile[
 				headers: {
 					Accept: "application/vnd.github.v3+json",
 				},
-				next: { revalidate: 3600 },
+				next: { revalidate: cacheTime },
 			},
 		)
 
@@ -320,7 +322,7 @@ export async function getProjectFiles(projectName: string): Promise<ProjectFile[
 export async function getFileContent(url: string): Promise<string> {
 	try {
 		const response = await fetch(url, {
-			next: { revalidate: 3600 },
+			next: { revalidate: cacheTime },
 		})
 
 		if (!response.ok) {
