@@ -3,13 +3,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Folder } from "lucide-react"
 import { getProjects, extractDescriptionFromProject } from "@/lib/github"
-import { getBadgeColor } from "@/lib/utils"
+import { getBadgeColor, getFolderColor } from "@/lib/utils"
 
 interface Project {
 	name: string
 	path: string
 	type: string
 	tags: string[] // Assuming tags are added to the Project interface
+	status: string
 }
 
 export default async function Home() {
@@ -35,17 +36,17 @@ export default async function Home() {
 				) : (
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 						{projects.map((project) => (
-							<Link key={project.path} href={`/project/${encodeURIComponent(project.name)}`} className="group">
+							<Link key={project.path} href={`/project/${encodeURIComponent(project.path)}`} className="group">
 								<Card className="h-full transition-all duration-200 hover:border-primary/50 hover:shadow-lg">
 									<CardHeader>
 										<div className="flex items-start justify-between mb-2">
-											<div className="p-2 rounded-lg bg-muted">
-												<Folder className="h-6 w-6 text-muted-foreground" />
+											<div className={`p-2 rounded-lg ${getFolderColor(project.status)}`}>
+												<Folder className="h-6 w-6" />
 											</div>
 											<ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
 										</div>
 										<CardTitle className="text-xl">{project.name}</CardTitle>
-										<CardDescription>{extractDescriptionFromProject(project.name)}</CardDescription>
+										<CardDescription>{extractDescriptionFromProject(project.path)}</CardDescription>
 									</CardHeader>
 									<CardContent>
 										{project.tags.length > 0 && (
@@ -67,5 +68,3 @@ export default async function Home() {
 		</main>
 	)
 }
-
-

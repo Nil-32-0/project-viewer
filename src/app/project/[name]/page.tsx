@@ -8,26 +8,46 @@ import { Card, CardContent } from "@/components/ui/card"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import remarkBreaks from "remark-breaks";
-import { getProjectFiles, getFileContent, extractTagsFromProject } from "@/lib/github"
+import { getProjectFiles, getFileContent, extractTagsFromProject, resolveProjectPath } from "@/lib/github"
 import { getBadgeColor } from "@/lib/utils"
 
-function resolveAssetUrl(projectName: string, url?: string) {
-	if (!url) return ""
-	//absolute URL: leave as-is
-	if (/^https?:\/\//i.test(url)) return url
-	//map relative to raw GitHub content in your repo
-	return `https://raw.githubusercontent.com/rileybarshak/projects/HEAD/${encodeURIComponent(
-		projectName
-	)}/${url.replace(/^.\//, "")}`
+function encodePath(path: string) {
+	return path
+		.split("/")
+		.map((seg) => encodeURIComponent(seg))
+		.join("/")
 }
 
-function resolvePageUrl(projectName: string, href?: string) {
+function buildRawBaseUrl(projectPath: string) {
+	const encoded = encodePath(projectPath)
+	const suffix = encoded.length > 0 ? `${encoded}/` : ""
+	return `https://raw.githubusercontent.com/rileybarshak/projects/HEAD/${suffix}`
+}
+
+function buildRepoBaseUrl(projectPath: string) {
+	const encoded = encodePath(projectPath)
+	const suffix = encoded.length > 0 ? `${encoded}/` : ""
+	return `https://github.com/rileybarshak/projects/blob/HEAD/${suffix}`
+}
+
+function resolveAssetUrl(projectPath: string, url?: string) {
+	if (!url) return ""
+	if (/^(?:https?:|data:)/i.test(url)) return url
+	try {
+		return new URL(url, buildRawBaseUrl(projectPath)).toString()
+	} catch (_error) {
+		return ""
+	}
+}
+
+function resolvePageUrl(projectPath: string, href?: string) {
 	if (!href) return "#"
-	if (/^https?:\/\//i.test(href)) return href
-	//Link to the GitHub UI (blob view) for relative docs
-	return `https://github.com/rileybarshak/projects/blob/HEAD/${encodeURIComponent(
-		projectName
-	)}/${href.replace(/^.\//, "")}`
+	if (/^(?:https?:|mailto:|tel:)/i.test(href) || href.startsWith("#")) return href
+	try {
+		return new URL(href, buildRepoBaseUrl(projectPath)).toString()
+	} catch (_error) {
+		return href
+	}
 }
 
 export default async function ProjectPage({
@@ -36,12 +56,16 @@ export default async function ProjectPage({
 	params: Promise<{ name: string }>
 }) {
 	const { name } = await params
-	const projectName = decodeURIComponent(name)
+	const decodedSlug = decodeURIComponent(name)
 
-	const files = await getProjectFiles(projectName)
+	const resolvedPath = await resolveProjectPath(decodedSlug)
+	const projectPath = resolvedPath ?? decodedSlug
+
+	const files = await getProjectFiles(projectPath)
 	if (!files || files.length === 0) notFound()
 
-	const tags = await extractTagsFromProject(projectName)
+	const projectDisplayName = projectPath.split("/").pop() ?? projectPath
+	const tags = await extractTagsFromProject(projectPath)
 
 	const markdownFiles = files.filter(
 		(file) => file.name.toLowerCase().endsWith(".md") && file.download_url
@@ -65,7 +89,7 @@ export default async function ProjectPage({
 				</Link>
 
 				<div className="mb-12">
-					<h1 className="text-4xl sm:text-5xl font-bold mb-4 text-balance">{projectName}</h1>
+					<h1 className="text-4xl sm:text-5xl font-bold mb-4 text-balance">{projectDisplayName}</h1>
 					{tags.length > 0 && (
 						<div className="flex flex-wrap gap-2 mb-4">
 							{tags.map((tag, i) => (
@@ -92,36 +116,33 @@ export default async function ProjectPage({
 
 									<div className="prose prose-neutral dark:prose-invert max-w-none">
 										<ReactMarkdown
-						remarkPlugins={[remarkGfm, remarkBreaks]}
-						components={{
-							img({ src, alt, ...props }) {
-								const resolvedSrc =
-									typeof src === "string" ? resolveAssetUrl(projectName, src) : ""
+											remarkPlugins={[remarkGfm, remarkBreaks]}
+											components={{
+												img({ src, alt, ...props }) {
+													const resolvedSrc = typeof src === "string" ? resolveAssetUrl(projectPath, src) : ""
 
-								return (
-									<img
-										src={resolvedSrc}
-										alt={typeof alt === "string" ? alt : ""}
-										loading="lazy"
-										className="rounded-lg max-w-full h-auto"
-										{...props}
-									/>
-								)
-							},
-							a({ href, children, ...props }) {
-								const to =
-									typeof href === "string" ? resolvePageUrl(projectName, href) : "#"
-								return (
-									<a href={to} target="_blank" rel="noopener noreferrer" {...props}>
-										{children}
-									</a>
-								)
-							},
-						}}
-					>
-						{md.content}
-					</ReactMarkdown>
-
+													return (
+														<img
+															src={resolvedSrc}
+															alt={typeof alt === "string" ? alt : ""}
+															loading="lazy"
+															className="rounded-lg max-w-full h-auto"
+															{...props}
+														/>
+													)
+												},
+												a({ href, children, ...props }) {
+													const to = typeof href === "string" ? resolvePageUrl(projectPath, href) : "#"
+													return (
+														<a href={to} target="_blank" rel="noopener noreferrer" {...props}>
+															{children}
+														</a>
+													)
+												},
+											}}
+										>
+											{md.content}
+										</ReactMarkdown>
 									</div>
 								</CardContent>
 							</Card>
