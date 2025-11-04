@@ -56,7 +56,7 @@ function partitionStatusDirectories(directories: DirectoryEntry[]) {
 
 export async function getProjects(): Promise<ProjectWithTags[]> {
 	try {
-		const response = await fetch("https://api.github.com/repos/GITHUB_USER/projects/contents", {
+		const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/projects/contents`, {
 			headers: {
 				Accept: "application/vnd.github.v3+json",
 			},
@@ -92,7 +92,7 @@ export async function getProjects(): Promise<ProjectWithTags[]> {
 		for (const { entry: statusDir, status: statusName } of statusDirs) {
 			const statusPath = encodePath(statusDir.path)
 			const subResp = await fetch(
-				`https://api.github.com/repos/GITHUB_USER/projects/contents/${statusPath}`,
+				`https://api.github.com/repos/${GITHUB_USER}/projects/contents/${statusPath}`,
 				{
 					headers: { Accept: "application/vnd.github.v3+json" },
 					next: { revalidate: cacheTime },
@@ -155,7 +155,7 @@ export async function resolveProjectPath(nameOrPath: string): Promise<string | n
 	if (pathHasSlash(nameOrPath)) return nameOrPath
 
 	const directResponse = await fetch(
-		`https://api.github.com/repos/GITHUB_USER/projects/contents/${encodePath(nameOrPath)}`,
+		`https://api.github.com/repos/${GITHUB_USER}/projects/contents/${encodePath(nameOrPath)}`,
 		{ headers: { Accept: "application/vnd.github.v3+json" }, next: { revalidate: cacheTime } },
 	)
 	if (directResponse.ok) return nameOrPath
@@ -163,7 +163,7 @@ export async function resolveProjectPath(nameOrPath: string): Promise<string | n
 	for (const status of STATUS_DIRS) {
 		const tryPath = `${status}/${nameOrPath}`
 		const response = await fetch(
-			`https://api.github.com/repos/GITHUB_USER/projects/contents/${encodePath(tryPath)}`,
+			`https://api.github.com/repos/${GITHUB_USER}/projects/contents/${encodePath(tryPath)}`,
 			{ headers: { Accept: "application/vnd.github.v3+json" }, next: { revalidate: cacheTime } },
 		)
 		if (response.ok) return tryPath
@@ -177,7 +177,7 @@ export async function extractDescriptionFromProject(projectName: string): Promis
 		if (!projectPath) return { description: "", redirectUrl: null }
 		//Fetch project files
 		const response = await fetch(
-			`https://api.github.com/repos/GITHUB_USER/projects/contents/${encodePath(projectPath)}`,
+			`https://api.github.com/repos/${GITHUB_USER}/projects/contents/${encodePath(projectPath)}`,
 			{
 				headers: {
 					Accept: "application/vnd.github.v3+json",
@@ -241,7 +241,7 @@ export async function extractTagsFromProject(projectName: string): Promise<strin
 		if (!projectPath) return []
 		//Fetch project files
 		const response = await fetch(
-			`https://api.github.com/repos/GITHUB_USER/projects/contents/${encodePath(projectPath)}`,
+			`https://api.github.com/repos/${GITHUB_USER}/projects/contents/${encodePath(projectPath)}`,
 			{
 				headers: {
 					Accept: "application/vnd.github.v3+json",
@@ -300,7 +300,7 @@ export async function getProjectFiles(projectName: string): Promise<ProjectFile[
 		const projectPath = await resolveProjectPath(projectName)
 		if (!projectPath) return []
 		const response = await fetch(
-			`https://api.github.com/repos/GITHUB_USER/projects/contents/${encodePath(projectPath)}`,
+			`https://api.github.com/repos/${GITHUB_USER}/projects/contents/${encodePath(projectPath)}`,
 			{
 				headers: {
 					Accept: "application/vnd.github.v3+json",
