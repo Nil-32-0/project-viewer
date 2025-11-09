@@ -8,16 +8,30 @@ type TagCategoryConfig = {
 	tags: string[]
 }
 
+type StatusStyleConfig = {
+	folderClasses?: string
+}
+
 export type AppConfig = {
 	githubUser: string
 	tagCategories: Record<string, TagCategoryConfig>
+	statusStyles: Record<string, StatusStyleConfig>
 }
 
 const CONFIG_FILE_PATH = path.join(process.cwd(), "config.yaml")
 const isProduction = process.env.NODE_ENV === "production"
 
+export const DEFAULT_STATUS_FOLDER_CLASS = "bg-muted text-muted-foreground"
+const defaultStatusFolderClasses: Record<string, string> = {
+	completed: "bg-green-100 text-green-700",
+	"in progress": "bg-amber-100 text-amber-700",
+	incomplete: "bg-red-100 text-red-700",
+	uncategorized: DEFAULT_STATUS_FOLDER_CLASS,
+}
+
 let cachedConfig: AppConfig | null = null
 let cachedTagColorMap: Record<string, string> | null = null
+let cachedStatusFolderClasses: Record<string, string> | null = null
 
 function loadConfigFromDisk(): AppConfig {
 	if (!fs.existsSync(CONFIG_FILE_PATH)) {
@@ -60,9 +74,33 @@ function loadConfigFromDisk(): AppConfig {
 		{},
 	)
 
+	const statusStyles = Object.entries(parsed.statusStyles ?? {}).reduce<Record<string, StatusStyleConfig>>(
+		(acc, [key, value]) => {
+			if (!value || typeof value !== "object") {
+				return acc
+			}
+
+			const normalizedKey = key.trim().toLowerCase()
+			if (!normalizedKey) {
+				return acc
+			}
+
+			const styleValue = value as StatusStyleConfig
+			const folderClasses = styleValue.folderClasses?.toString().trim()
+
+			if (folderClasses) {
+				acc[normalizedKey] = { folderClasses }
+			}
+
+			return acc
+		},
+		{},
+	)
+
 	return {
 		githubUser,
 		tagCategories,
+		statusStyles,
 	}
 }
 
@@ -97,6 +135,28 @@ export function getTagColorMap(): Record<string, string> {
 	}
 
 	return cachedTagColorMap
+}
+
+function buildStatusFolderClassMap(statusStyles: Record<string, StatusStyleConfig>): Record<string, string> {
+	const overrides = Object.entries(statusStyles ?? {}).reduce<Record<string, string>>((acc, [key, config]) => {
+		if (!config?.folderClasses) return acc
+		acc[key] = config.folderClasses
+		return acc
+	}, {})
+
+	return { ...defaultStatusFolderClasses, ...overrides }
+}
+
+export function getStatusFolderClasses(): Record<string, string> {
+	if (!isProduction) {
+		return buildStatusFolderClassMap(getConfig().statusStyles)
+	}
+
+	if (!cachedStatusFolderClasses) {
+		cachedStatusFolderClasses = buildStatusFolderClassMap(getConfig().statusStyles)
+	}
+
+	return cachedStatusFolderClasses
 }
 
 export function getGithubUser(): string {

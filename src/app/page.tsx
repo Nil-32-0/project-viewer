@@ -1,5 +1,5 @@
 import ProjectsGallery from "@/components/projects-gallery"
-import { getTagColorMap } from "@/lib/config"
+import { DEFAULT_STATUS_FOLDER_CLASS, getStatusFolderClasses, getTagColorMap } from "@/lib/config"
 import { extractDescriptionFromProject, getProjects } from "@/lib/github"
 
 interface Project {
@@ -27,6 +27,8 @@ export default async function Home() {
 	)
 
 	const tagColorByValue = getTagColorMap()
+	const statusFolderClasses = getStatusFolderClasses()
+	const defaultFolderClass = statusFolderClasses["uncategorized"] ?? DEFAULT_STATUS_FOLDER_CLASS
 
 	return (
 		<main className="min-h-screen bg-background">
@@ -39,7 +41,12 @@ export default async function Home() {
 					</p>
 				</div>
 
-				<ProjectsGallery projects={projectsWithMeta} tagColorByValue={tagColorByValue} />
+				<ProjectsGallery
+					projects={projectsWithMeta}
+					tagColorByValue={tagColorByValue}
+					statusFolderClasses={statusFolderClasses}
+					defaultFolderClass={defaultFolderClass}
+				/>
 			</div>
 		</main>
 	)

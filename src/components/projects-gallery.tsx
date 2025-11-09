@@ -7,7 +7,7 @@ import { Folder } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { cn, getFolderColor, getStatusBadgeColor } from "@/lib/utils"
+import { cn, getStatusBadgeColor } from "@/lib/utils"
 
 type ProjectCard = {
 	name: string
@@ -22,9 +22,16 @@ type ProjectCard = {
 interface ProjectsGalleryProps {
 	projects: ProjectCard[]
 	tagColorByValue: Record<string, string>
+	statusFolderClasses: Record<string, string>
+	defaultFolderClass: string
 }
 
-export default function ProjectsGallery({ projects, tagColorByValue }: ProjectsGalleryProps) {
+export default function ProjectsGallery({
+	projects,
+	tagColorByValue,
+	statusFolderClasses,
+	defaultFolderClass,
+}: ProjectsGalleryProps) {
 	const [searchTerm, setSearchTerm] = useState("")
 	const [statusFilter, setStatusFilter] = useState<string>("all")
 	const [selectedTags, setSelectedTags] = useState<string[]>([])
@@ -154,7 +161,11 @@ export default function ProjectsGallery({ projects, tagColorByValue }: ProjectsG
 							<Card className="h-full transition-all duration-200 hover:border-primary/50 hover:shadow-lg">
 								<CardHeader>
 									<div className="mb-2 flex items-start justify-between">
-										<div className={`rounded-lg p-2 ${getFolderColor(project.status)}`}>
+										<div
+											className={`rounded-lg p-2 ${
+												statusFolderClasses[project.status?.toLowerCase() ?? "uncategorized"] ?? defaultFolderClass
+											}`}
+										>
 											<Folder className="h-6 w-6" />
 										</div>
 										<Badge

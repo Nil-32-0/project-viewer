@@ -34,3 +34,12 @@ tagCategories:
       - cad
       - electrical systems
       - embedded systems
+statusStyles:
+  completed:
+    folderClasses: bg-green-100 text-green-700
+  "in progress":
+    folderClasses: bg-amber-100 text-amber-700
+  incomplete:
+    folderClasses: bg-red-100 text-red-700
+  uncategorized:
+    folderClasses: bg-muted text-muted-foreground

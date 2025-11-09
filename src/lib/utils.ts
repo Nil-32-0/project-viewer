@@ -5,24 +5,6 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }
 
-export function getFolderColor(status: string) {
-	const f = status.toLowerCase()
-
-	if (f === "completed") {
-		return "bg-green-100 text-green-700"
-	}
-	if (f === "in progress") {
-		return "bg-amber-100 text-amber-700"
-	}
-	if (f === "incomplete") {
-		return "bg-red-100 text-red-700"
-	}
-	if (f === "uncategorized") {
-		return "bg-muted text-muted-foreground"
-	}
-	return "bg-muted text-muted-foreground"
-}
-
 export function getStatusBadgeColor(status: string) {
 	const s = status.toLowerCase()
 

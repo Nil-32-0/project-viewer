@@ -81,6 +81,7 @@ A Next.js application that pulls live project documentation from your GitHub acc
 ## Customization Notes
 
 - Edit `config.yaml` to update the default GitHub user and the tag categories surfaced in the UI.
+- In the same file you can tweak `statusStyles` to change the folder color swatches per status (and add new statuses if your repo uses them).
 - To change status buckets or the source repo name, update `src/lib/github.ts`.
 - Badge colors are mapped in `src/lib/utils.ts`; extend the lists to highlight new technologies.
 - Styling lives in `src/app/globals.css` and the UI components under `src/components/ui`.
