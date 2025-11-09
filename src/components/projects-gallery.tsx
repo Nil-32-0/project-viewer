@@ -8,14 +8,6 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn, getFolderColor, getStatusBadgeColor } from "@/lib/utils"
-import { tagCategories } from "@/lib/config"
-
-const tagColorByValue = Object.values(tagCategories).reduce<Record<string, string>>((acc, [classes, tags]) => {
-	tags.forEach((tag) => {
-		acc[tag.toLowerCase()] = classes
-	})
-	return acc
-}, {})
 
 type ProjectCard = {
 	name: string
@@ -29,9 +21,10 @@ type ProjectCard = {
 
 interface ProjectsGalleryProps {
 	projects: ProjectCard[]
+	tagColorByValue: Record<string, string>
 }
 
-export default function ProjectsGallery({ projects }: ProjectsGalleryProps) {
+export default function ProjectsGallery({ projects, tagColorByValue }: ProjectsGalleryProps) {
 	const [searchTerm, setSearchTerm] = useState("")
 	const [statusFilter, setStatusFilter] = useState<string>("all")
 	const [selectedTags, setSelectedTags] = useState<string[]>([])

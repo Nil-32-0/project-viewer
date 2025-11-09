@@ -1,3 +1,5 @@
+import { getGithubUser } from "@/lib/config"
+
 type GitHubContentType = "file" | "dir"
 
 interface ProjectFile {
@@ -22,7 +24,7 @@ interface ProjectDescription {
 
 const cacheTime = 60 //cache time in seconds
 
-const GITHUB_USER = process.env.GITHUB_USER;
+const GITHUB_USER = getGithubUser()
 
 const STATUS_DIRS = ["Completed", "In Progress", "Incomplete"] as const
 const STATUS_LOOKUP = new Map(STATUS_DIRS.map((status) => [status.toLowerCase(), status] as const))

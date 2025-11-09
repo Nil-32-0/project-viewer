@@ -10,14 +10,10 @@ import remarkGfm from "remark-gfm"
 import remarkBreaks from "remark-breaks";
 import { getProjectFiles, getFileContent, extractTagsFromProject, resolveProjectPath } from "@/lib/github"
 import { cn } from "@/lib/utils"
-import { tagCategories } from "@/lib/config"
+import { getGithubUser, getTagColorMap } from "@/lib/config"
 
-const tagColorByValue = Object.values(tagCategories).reduce<Record<string, string>>((acc, [classes, tags]) => {
-	tags.forEach((tag) => {
-		acc[tag.toLowerCase()] = classes
-	})
-	return acc
-}, {})
+const tagColorByValue = getTagColorMap()
+const githubUser = getGithubUser()
 
 function encodePath(path: string) {
 	return path
@@ -29,13 +25,13 @@ function encodePath(path: string) {
 function buildRawBaseUrl(projectPath: string) {
 	const encoded = encodePath(projectPath)
 	const suffix = encoded.length > 0 ? `${encoded}/` : ""
-	return `https://raw.githubusercontent.com/rileybarshak/projects/HEAD/${suffix}`
+	return `https://raw.githubusercontent.com/${githubUser}/projects/HEAD/${suffix}`
 }
 
 function buildRepoBaseUrl(projectPath: string) {
 	const encoded = encodePath(projectPath)
 	const suffix = encoded.length > 0 ? `${encoded}/` : ""
-	return `https://github.com/rileybarshak/projects/blob/HEAD/${suffix}`
+	return `https://github.com/${githubUser}/projects/blob/HEAD/${suffix}`
 }
 
 function resolveAssetUrl(projectPath: string, url?: string) {

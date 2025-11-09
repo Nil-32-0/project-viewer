@@ -51,8 +51,7 @@ A Next.js application that pulls live project documentation from your GitHub acc
      - Line 3: (`**Project Description:** …`) for the card blurb.
      - Line 5: (`**Languages & Technologies:** …`) for tags (comma-separated, case-insensitive).
 3. **Point the viewer at your GitHub account**:
-   - Copy `.env.example` to `.env`.
-   - Set `GITHUB_USER=<your GitHub username>`.
+   - Update `config.yaml` and set `githubUser` (plus tweak any `tagCategories` you want to expose in the UI).
 
 ---
 
@@ -60,7 +59,7 @@ A Next.js application that pulls live project documentation from your GitHub acc
 
 1. Clone your fork and enter the directory.
 2. Install dependencies (`npm install`, `pnpm install`, or `yarn install`).
-3. Ensure `.env` contains `GITHUB_USER`.
+3. Ensure `config.yaml` has the correct `githubUser`
 4. Start the dev server:
 
    ```bash
@@ -73,7 +72,7 @@ A Next.js application that pulls live project documentation from your GitHub acc
 
 ## Deployment Checklist
 
-- **Environment variable**: add `GITHUB_USER` to your hosting provider (e.g., Vercel → Project Settings → Environment Variables).
+- **Environment variable**: set values in `config.yaml` 
 - **Cold starts / caching**: API responses are cached for 60 seconds; refresh after a minute if you just pushed new Markdown.
 - **CORS and tokens**: Public repos work anonymously. If you hit GitHub’s rate limit, add a server-side proxy or inject a token in `github.ts`.
 
@@ -81,6 +80,7 @@ A Next.js application that pulls live project documentation from your GitHub acc
 
 ## Customization Notes
 
+- Edit `config.yaml` to update the default GitHub user and the tag categories surfaced in the UI.
 - To change status buckets or the source repo name, update `src/lib/github.ts`.
 - Badge colors are mapped in `src/lib/utils.ts`; extend the lists to highlight new technologies.
 - Styling lives in `src/app/globals.css` and the UI components under `src/components/ui`.

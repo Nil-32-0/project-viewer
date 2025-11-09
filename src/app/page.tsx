@@ -1,4 +1,5 @@
 import ProjectsGallery from "@/components/projects-gallery"
+import { getTagColorMap } from "@/lib/config"
 import { extractDescriptionFromProject, getProjects } from "@/lib/github"
 
 interface Project {
@@ -25,6 +26,8 @@ export default async function Home() {
 		}),
 	)
 
+	const tagColorByValue = getTagColorMap()
+
 	return (
 		<main className="min-h-screen bg-background">
 			<div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
@@ -36,7 +39,7 @@ export default async function Home() {
 					</p>
 				</div>
 
-				<ProjectsGallery projects={projectsWithMeta} />
+				<ProjectsGallery projects={projectsWithMeta} tagColorByValue={tagColorByValue} />
 			</div>
 		</main>
 	)

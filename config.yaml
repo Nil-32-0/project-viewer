@@ -1,0 +1,36 @@
+githubUser: rileybarshak
+tagCategories:
+  languages:
+    classes: bg-green-200 text-green-700
+    tags:
+      - python`
+      - typescript
+      - javascript
+      - java
+      - go 
+  frameworksAndLibraries:
+    classes: bg-blue-200 text-blue-700
+    tags:
+      - react
+      - next.js
+      - tailwind css
+  devOps:
+    classes: bg-amber-200 text-amber-700
+    tags:
+      - docker
+      - git
+      - kubernetes
+  databases:
+    classes: bg-purple-200 text-purple-700
+    tags:
+      - mongodb
+      - sql
+      - postgresql
+  hardware:
+    classes: bg-rose-200 text-rose-700
+    tags:
+      - 3d modeling
+      - 3d printing
+      - cad
+      - electrical systems
+      - embedded systems
