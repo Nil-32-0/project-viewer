@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import remarkBreaks from "remark-breaks";
+import rehypeRaw from "rehype-raw";
 import { getProjectFiles, getFileContent, extractTagsFromProject, resolveProjectPath } from "@/lib/github"
 import { cn } from "@/lib/utils"
 import { getGithubUser, getTagColorMap } from "@/lib/config"
@@ -121,6 +122,7 @@ export default async function ProjectPage({
 									<div className="prose prose-neutral dark:prose-invert max-w-none">
 										<ReactMarkdown
 											remarkPlugins={[remarkGfm, remarkBreaks]}
+											rehypePlugins={[rehypeRaw]}
 											components={{
 											img({ src, alt, ...props }) {
 												const resolvedSrc = typeof src === "string" ? resolveAssetUrl(projectPath, src) : ""
