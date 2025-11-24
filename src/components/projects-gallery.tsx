@@ -107,7 +107,7 @@ export default function ProjectsGallery({
 						<select
 							value={statusFilter}
 							onChange={(event) => setStatusFilter(event.target.value)}
-							className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:w-48"
+							className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:w-48 cursor-pointer"
 						>
 							<option value="all">All</option>
 							{statusOptions.map((status) => (
@@ -137,7 +137,7 @@ export default function ProjectsGallery({
 								type="button"
 								onClick={() => toggleTag(tag.value)}
 								className={cn(
-									"rounded-full border px-3 py-1 text-sm transition-colors",
+									"rounded-full border px-3 py-1 text-sm transition-colors cursor-pointer",
 									isActive
 										? "border-primary bg-primary/10 text-primary"
 										: "border-border bg-background text-muted-foreground hover:text-foreground",
