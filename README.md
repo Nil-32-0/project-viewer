@@ -97,3 +97,9 @@ A Next.js application that pulls live project documentation from your GitHub acc
 ---
 
 Need inspiration? Fork both repos, swap in your username, and you’ll have a personalized project hub in minutes. Happy showcasing!
+
+---
+
+## License Notice
+
+This project is distributed under the license described in [`LICENSE`](./LICENSE). Derivative works must display the footer attribution required by [`NOTICE`](./NOTICE).
