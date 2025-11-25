@@ -1,13 +1,12 @@
-githubUser: rileybarshak
+githubUser: Nil-32-0
 tagCategories:
   languages:
     classes: bg-green-200 text-green-700
     tags:
-      - python`
+      - python
       - typescript
       - javascript
       - java
-      - go 
   frameworksAndLibraries:
     classes: bg-blue-200 text-blue-700
     tags:
