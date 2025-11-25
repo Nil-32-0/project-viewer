@@ -1,5 +1,5 @@
 import ProjectsGallery from "@/components/projects-gallery"
-import { DEFAULT_STATUS_FOLDER_CLASS, getStatusFolderClasses, getTagColorMap } from "@/lib/config"
+import { DEFAULT_STATUS_FOLDER_CLASS, getConfig, getStatusFolderClasses, getTagColorMap } from "@/lib/config"
 import { extractDescriptionFromProject, getProjects } from "@/lib/github"
 
 interface Project {
@@ -27,6 +27,7 @@ export default async function Home() {
 	)
 
 	const tagColorByValue = getTagColorMap()
+	const { tagCategories } = getConfig()
 	const statusFolderClasses = getStatusFolderClasses()
 	const defaultFolderClass = statusFolderClasses["uncategorized"] ?? DEFAULT_STATUS_FOLDER_CLASS
 
@@ -44,6 +45,7 @@ export default async function Home() {
 				<ProjectsGallery
 					projects={projectsWithMeta}
 					tagColorByValue={tagColorByValue}
+					tagCategories={tagCategories}
 					statusFolderClasses={statusFolderClasses}
 					defaultFolderClass={defaultFolderClass}
 				/>

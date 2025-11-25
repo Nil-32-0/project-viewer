@@ -3,7 +3,7 @@ import path from "node:path"
 
 import { parse } from "yaml"
 
-type TagCategoryConfig = {
+export type TagCategoryConfig = {
 	classes: string
 	tags: string[]
 }
